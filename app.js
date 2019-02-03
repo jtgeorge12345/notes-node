@@ -8,9 +8,23 @@ const notes = require('./notes.js')
 const _ = require('lodash');
 
 
+var command = process.argv[2];
 
-var filteredArray = _.uniq([1,2,3,4,5,5,5,5,"jason", "jason"]);
-console.log(filteredArray)
+console.log("Command:", command);
+
+if (command == 'add') {
+  console.log('adding new note');
+} else if (command == 'list') {
+  console.log('showing all notes');
+} else if (command == 'read'){
+  console.log('reading a note');
+} else if (command == 'remove'){
+  console.log('removing a note');
+} else {
+  console.log('Command not recognized');
+}
+
+
 // console.log(_.isString(true))
 // console.log(_.isString('true'))
 // console.log(_.isString(1))

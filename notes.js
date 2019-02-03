@@ -1,4 +1,3 @@
-console.log(module)
 
 module.exports.age = 24;
 
