@@ -1,5 +1,3 @@
-console.log("starting app.js.");
-
 //Nodejs.org/api will have all modules
 
 const fs = require('fs');
@@ -8,25 +6,65 @@ const notes = require('./notes.js')
 const _ = require('lodash');
 const yargs = require('yargs')
 
+var titleOptions = {
+  describe: "Title of note",
+  demand: true,
+  alias: "t"
+};
 
-const argv = yargs.argv;
+var bodyOptions = {
+  describe: "The body of the note",
+  demand: true,
+  alias: "b"
+};
+
+const argv = yargs
+  .command('add', 'add a new note', {
+    title: titleOptions,
+    body: bodyOptions
+  })
+  .command("list", "list all notes")
+  .command("read", "read a note", {
+    title: titleOptions
+  })
+  .command("remove", "remove a note", {
+    title: titleOptions
+  })
+  .help()
+  .argv;
+
 var command = process.argv[2];
-
-console.log("Yargs argv:", argv);
-console.log("process argv", process.argv);
 
 if (command == 'add') {
   console.log('adding new note');
-  notes.addNote(argv.title, argv.body);
+  var note = notes.addNote(argv.title, argv.body);
+  if (note==null){
+    console.log("Error: A note with that title already exists.");
+  } else {
+    console.log("Note was successfully added.");
+    notes.logNote(note);
+  }
 } else if (command == 'list') {
-  console.log('showing all notes');
-  notes.getAll();
+  console.log('Showing all notes');
+  var allNotes = notes.getAll();
+  console.log(`Printing ${allNotes.length} note(s)`);
+  allNotes.forEach((note) => {
+    notes.logNote(note);
+  });
 } else if (command == 'read'){
-  console.log('reading a note');
-  notes.getNote(argv.title);
+  console.log('Reading a note');
+  var readNote = notes.getNote(argv.title);
+  if (readNote){
+    notes.logNote(readNote);
+  } else {
+    console.log(`Could not locate a note with title: ${argv.title}`);
+  }
+
 } else if (command == 'remove'){
-  console.log('removing a note');
-  notes.removeNote(argv.title);
+  console.log('Removing a note');
+  var noteRemoved = notes.removeNote(argv.title);
+  var message = noteRemoved ? `successfully removed note: ${argv.title}` : `Failed to removed note ${argv.title}`;
+  console.log(message);
 } else {
   console.log('Command not recognized');
 }
